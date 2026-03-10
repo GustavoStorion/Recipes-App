@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Recipes</string>
+    <string name = "app_title">Start Cooking</string>
+    <string name="unlimited_recipes">UNLIMITED PREMIUM RECIPES</string>
+    <string name="button_login">Login</string>
+    <string name="button_signup">Sign up</string>
+    <string name="sign_up">Sign up</string>
+    <string name="create_a_new_account">Create a new account</string>
+    <string name="user_image">User image</string>
+    <string name="camera_icon">Camera icon</string>
+    <string name="your_name">Your name</string>
+    <string name="person_icon">Person icon</string>
+    <string name="mail_icon">Mail icon</string>
+    <string name="your_password">Your password</string>
+    <string name="your_e_mail">Your e-mail</string>
+    <string name="password_icon">Password icon</string>
+    <string name="removeredeye_icon">RemoveRedEye icon</string>
+</resources>
