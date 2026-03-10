@@ -2,6 +2,7 @@ package br.com.fiap.recipes.screens
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,7 +37,41 @@ import br.com.fiap.recipes.ui.theme.RecipesTheme
 
 @Composable
 fun SignupScreen(modifier: Modifier = Modifier) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                MaterialTheme.colorScheme.background
+            )
+    ){
+        TopEndCard(modifier = Modifier.align(alignment = Alignment.TopEnd))
+        BottomStartCard(modifier = Modifier.align(alignment = Alignment.BottomStart))
 
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .align(alignment = Alignment.Center),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            TitleComponent()
+            Spacer(modifier = Modifier.height(48.dp))
+            UserImage()
+            SignupUserForm()
+        }
+    }
+}
+
+@Preview(
+    showBackground = true,
+    showSystemUi = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun SignupScreenPreview () {
+    RecipesTheme {
+        SignupScreen()
+    }
 }
 
 @Composable
@@ -81,7 +116,7 @@ fun UserImage(modifier: Modifier = Modifier) {
             painter = painterResource(R.drawable.user),
             contentDescription = stringResource(R.string.user_image),
             modifier = Modifier
-                .size(110.dp)
+                .size(100.dp)
                 .align(alignment = Alignment.Center)
         )
         Icon(
@@ -90,9 +125,6 @@ fun UserImage(modifier: Modifier = Modifier) {
             tint = MaterialTheme.colorScheme.primary, // parametro de color para icon é "tint"
             modifier = Modifier
                 .align(alignment = Alignment.BottomEnd)
-        )
-        Text(
-            text = "apenas um teste"
         )
     }
 }
