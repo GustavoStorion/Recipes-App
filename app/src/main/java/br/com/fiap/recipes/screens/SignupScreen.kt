@@ -65,7 +65,7 @@ fun SignupScreen(modifier: Modifier = Modifier) {
 @Preview(
     showBackground = true,
     showSystemUi = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES
+    uiMode = Configuration.UI_MODE_NIGHT_NO
 )
 @Composable
 private fun SignupScreenPreview () {

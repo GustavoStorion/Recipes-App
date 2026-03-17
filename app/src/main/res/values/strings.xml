@@ -15,4 +15,10 @@
     <string name="your_e_mail">Your e-mail</string>
     <string name="password_icon">Password icon</string>
     <string name="removeredeye_icon">RemoveRedEye icon</string>
+    <string name="login">Login</string>
+    <string name="please_sign_in_to_continue">Please, sign in to continue</string>
+    <string name="sign_in">SIGN IN</string>
+    <string name="sign_in_lowercase">sign in</string>
+    <string name="sign_up_row">Sign up</string>
+    <string name="search_by_recipes">Search by recipes</string>
 </resources>
