@@ -32,11 +32,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import br.com.fiap.recipes.R
+import br.com.fiap.recipes.navigation.Destination
 import br.com.fiap.recipes.ui.theme.RecipesTheme
 
 @Composable
-fun SignupScreen(modifier: Modifier = Modifier) {
+fun SignupScreen(navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -57,7 +60,7 @@ fun SignupScreen(modifier: Modifier = Modifier) {
             TitleComponent()
             Spacer(modifier = Modifier.height(48.dp))
             UserImage()
-            SignupUserForm()
+            SignupUserForm(navController)
         }
     }
 }
@@ -70,7 +73,7 @@ fun SignupScreen(modifier: Modifier = Modifier) {
 @Composable
 private fun SignupScreenPreview () {
     RecipesTheme {
-        SignupScreen()
+        SignupScreen(rememberNavController())
     }
 }
 
@@ -141,7 +144,7 @@ private fun UserImagePreivew() {
 }
 
 @Composable
-fun SignupUserForm(modifier: Modifier = Modifier) {
+fun SignupUserForm(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -242,7 +245,9 @@ fun SignupUserForm(modifier: Modifier = Modifier) {
 
         // Botão Create Account
         Button(
-            onClick = {},
+            onClick = {
+                navController.navigate(Destination.HomeScreen.route)
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),
@@ -260,7 +265,7 @@ fun SignupUserForm(modifier: Modifier = Modifier) {
 @Composable
 private fun SignupUserFormPreview() {
     RecipesTheme {
-        SignupUserForm()
+        SignupUserForm(rememberNavController())
     }
 
 }

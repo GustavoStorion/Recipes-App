@@ -1,5 +1,6 @@
 package br.com.fiap.recipes.screens
 
+// control + option + O para remover imports que não estão sendo utilizados
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -14,11 +15,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,13 +28,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import br.com.fiap.recipes.R
+import br.com.fiap.recipes.navigation.Destination
 import br.com.fiap.recipes.ui.theme.RecipesTheme
 import br.com.fiap.recipes.ui.theme.poppinsFamily
 
 
-@Composable
-fun InitialScreen (){
+@Composable // para que possa utilizar tbm o map de rotas
+fun InitialScreen (navController: NavController){
     Box(
         modifier = Modifier // Parametro poderoso em praticamene todos os componentes
             .fillMaxSize()
@@ -93,7 +94,10 @@ fun InitialScreen (){
 
                 Row {
                     Button(
-                        onClick = {}, // propriedade
+                        onClick = {
+                            navController
+                                .navigate(Destination.LoginScreen.route)
+                        }, // propriedade
                         colors = ButtonDefaults //propriedade
                             .buttonColors(  // componente buttonColors
                                 containerColor = MaterialTheme.colorScheme.primary
@@ -115,7 +119,12 @@ fun InitialScreen (){
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                     Button(
-                        onClick = {},
+                        onClick = {
+                            navController
+                                .navigate(
+                                    Destination.SignupScreen.route
+                                )
+                        },
                         colors = ButtonDefaults
                             .buttonColors(
                                 containerColor = MaterialTheme.colorScheme.tertiary
@@ -130,7 +139,7 @@ fun InitialScreen (){
                     )
                     {
                         Text(
-                            text = stringResource(R.string.button_login),
+                            text = stringResource(R.string.signup),
                             color = MaterialTheme.colorScheme.onTertiary,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold
@@ -153,7 +162,7 @@ fun InitialScreen (){
 )
 fun InitialScreenPreview(){ // Add preview como boa pratica
     RecipesTheme {
-        InitialScreen()
+        InitialScreen(rememberNavController())
     }
 }
 
