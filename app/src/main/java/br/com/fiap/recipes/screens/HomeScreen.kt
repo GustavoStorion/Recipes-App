@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,12 +12,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
@@ -51,16 +54,20 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import br.com.fiap.recipes.R
+import br.com.fiap.recipes.components.CategoryItem
+import br.com.fiap.recipes.components.RecipeItem
+import br.com.fiap.recipes.repository.getAlCategories
+import br.com.fiap.recipes.repository.getAllRecipes
 import br.com.fiap.recipes.ui.theme.RecipesTheme
 
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(navController: NavController, email: String?) {
     Surface(
         modifier = Modifier
             .fillMaxSize()
     ) {
         Scaffold(
-            topBar = {MyTopAppBar()},
+            topBar = {MyTopAppBar(email!!)},  //double bang (tiro de revolver com duas exclamações em desenho animado)
             bottomBar = {MyBottomAppBar()},
             floatingActionButton = {FloatingActionButton()}
             // Espaçamento seguro, o SCAFFOLD sabe onde é a sua área de conteúdo. Então ele vai garantir com que aquilo que você jogar dentro do content, fique dentro do content
@@ -71,18 +78,17 @@ fun HomeScreen(navController: NavController) {
     }
 }
 
-
 @Preview
 @Composable
 private fun HomeScreenPreview() {
     RecipesTheme {
-        HomeScreen(rememberNavController())
+        HomeScreen(rememberNavController(), "",) // ou null
     }
 }
 // Função experimental, sabendo que ela pode mudar...
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyTopAppBar(modifier: Modifier = Modifier) {
+fun MyTopAppBar(email: String) {
     TopAppBar(
         modifier = Modifier
             .fillMaxWidth(),
@@ -103,7 +109,7 @@ fun MyTopAppBar(modifier: Modifier = Modifier) {
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = "joao@email.com",
+                        text = email,
                         style = MaterialTheme.typography.displaySmall
                     )
                 }
@@ -134,7 +140,7 @@ fun MyTopAppBar(modifier: Modifier = Modifier) {
 @Composable
 private fun MyTopAppBarPreview() {
     RecipesTheme {
-        MyTopAppBar()
+        MyTopAppBar("")
     }
 }
 
@@ -212,11 +218,14 @@ private fun FloatingActionButtonPreview(){
 
 @Composable
 fun ContentScreen(modifier: Modifier = Modifier) {
+    val categories = getAlCategories()
+    val recipes = getAllRecipes()
+
     //Column vai receber o "modifier" com M minúsculo.
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 0.dp)
     ) {
         OutlinedTextField(
             value = "",
@@ -224,7 +233,7 @@ fun ContentScreen(modifier: Modifier = Modifier) {
             shape = RoundedCornerShape(12.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 8.dp),
+                .padding(vertical = 8.dp, horizontal = 16.dp),
             colors = OutlinedTextFieldDefaults
                 .colors(
                     unfocusedBorderColor = Color.Transparent,
@@ -248,7 +257,7 @@ fun ContentScreen(modifier: Modifier = Modifier) {
                 imeAction = ImeAction.Next
             )
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        //Spacer(modifier = Modifier.height(16.dp))
         Card(
             modifier = Modifier
                 .padding(bottom = 12.dp)
@@ -267,14 +276,40 @@ fun ContentScreen(modifier: Modifier = Modifier) {
         Text(
             text = "Categories",
             style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.primary
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier
+                .padding(horizontal = 16.dp, vertical = 8.dp)
         )
-        Spacer(modifier = Modifier.height(116.dp))
+        //Spacer(modifier = Modifier.height(16.dp))
+        LazyRow(
+            contentPadding = PaddingValues(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            // chamar items list<T>
+            items(categories) {category ->
+                CategoryItem(category)
+            }
+        }
+        //Spacer(modifier = Modifier.height(116.dp))
         Text(
             text = "Newly added recipes",
             style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.primary
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
         )
+        LazyColumn(
+            contentPadding = PaddingValues(
+                vertical = 16.dp,
+                horizontal = 16.dp
+            ),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(recipes) { recipe ->
+                RecipeItem(recipe)
+            }
+        }
     }
 }
 

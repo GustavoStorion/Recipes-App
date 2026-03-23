@@ -25,6 +25,10 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -107,6 +111,16 @@ private fun LoginTitlePreview() {
 
 @Composable
 fun LoginForm(navController: NavController) {
+    var email by remember{
+        mutableStateOf("")
+    }
+    var password by remember{
+        mutableStateOf("")
+    }
+
+    var name by remember {
+        mutableStateOf("")
+    }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -114,8 +128,10 @@ fun LoginForm(navController: NavController) {
     ) {
         //Caixa de texto para email
         OutlinedTextField(
-            value = "",
-            onValueChange = {},
+            value = email,
+            onValueChange = { emailValue ->
+                email = emailValue
+            },
             shape = RoundedCornerShape(16.dp),
             modifier = Modifier
                 .fillMaxWidth()
@@ -148,8 +164,10 @@ fun LoginForm(navController: NavController) {
         )
         // Caixa de texto para senha
         OutlinedTextField(
-            value = "",
-            onValueChange = {},
+            value = password,
+            onValueChange = {passwordValue ->
+                password = passwordValue
+            },
             shape = RoundedCornerShape(16.dp),
             modifier = Modifier
                 .fillMaxWidth()
@@ -197,7 +215,7 @@ fun LoginForm(navController: NavController) {
             onClick = {
                 navController
                     .navigate(
-                        Destination.HomeScreen.route
+                        Destination.HomeScreen.createRoute(email)
                     )
             },
             modifier = Modifier
@@ -229,7 +247,7 @@ fun LoginForm(navController: NavController) {
                 onClick = {
                     navController
                         .navigate(
-                            Destination.LoginScreen.route
+                            Destination.SignupScreen.route
                         )
                 }
             ) {

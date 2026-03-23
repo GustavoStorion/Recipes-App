@@ -26,6 +26,10 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -145,6 +149,10 @@ private fun UserImagePreivew() {
 
 @Composable
 fun SignupUserForm(navController: NavController) {
+    var email by remember{mutableStateOf("")}
+    var password by remember{mutableStateOf("")}
+    var name by remember{mutableStateOf("")}
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -152,8 +160,10 @@ fun SignupUserForm(navController: NavController) {
     ) {
         //Caixa de texto para nome do usuário
         OutlinedTextField( // Outilned(textfield)
-            value = "",
-            onValueChange = {},
+            value = name,
+            onValueChange = { nameValue ->
+                name = nameValue
+            },
             modifier = Modifier
                 .fillMaxWidth(),
             // label ou placeholder
@@ -181,8 +191,10 @@ fun SignupUserForm(navController: NavController) {
 
         //Caixa de texto para email do usuário
         OutlinedTextField( // Outilned(textfield)
-            value = "",
-            onValueChange = {},
+            value = email,
+            onValueChange = {emailValue ->
+                email = emailValue
+            },
             modifier = Modifier
                 .fillMaxWidth(),
             // label ou placeholder
@@ -209,8 +221,10 @@ fun SignupUserForm(navController: NavController) {
         )
         // Caixa de texto para senha do usuário
         OutlinedTextField( // Outilned(textfield)
-            value = "",
-            onValueChange = {},
+            value = password,
+            onValueChange = { passwordValue ->
+                password = passwordValue
+            },
             modifier = Modifier
                 .fillMaxWidth(),
             // label ou placeholder
@@ -246,7 +260,9 @@ fun SignupUserForm(navController: NavController) {
         // Botão Create Account
         Button(
             onClick = {
-                navController.navigate(Destination.HomeScreen.route)
+                navController.navigate(
+                    Destination.HomeScreen.createRoute(email)
+                )
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -267,5 +283,4 @@ private fun SignupUserFormPreview() {
     RecipesTheme {
         SignupUserForm(rememberNavController())
     }
-
 }
