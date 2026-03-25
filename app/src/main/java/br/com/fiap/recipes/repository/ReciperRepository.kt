@@ -75,3 +75,10 @@ import java.time.LocalDate
             image = R.drawable.feijoada
         )
     )
+
+//Função responsável por retornar a lista de categorias
+fun getRecipesByCategory(id: Int) = getAllRecipes()
+    //verficando o id da categoria da receita
+    .filter{recipe ->
+        recipe.category.id == id
+    }

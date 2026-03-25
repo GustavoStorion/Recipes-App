@@ -12,6 +12,8 @@ import br.com.fiap.recipes.screens.HomeScreen
 import br.com.fiap.recipes.screens.InitialScreen
 import br.com.fiap.recipes.screens.LoginScreen
 import br.com.fiap.recipes.screens.SignupScreen
+import br.com.fiap.recipes.screens.CategoryRecipeScreen
+
 
 @Composable
 fun NavigationRoutes() {
@@ -45,19 +47,25 @@ fun NavigationRoutes() {
             )
         ){backStackEntry ->
             var email = backStackEntry.arguments?.getString("email")
+            // DESSE JEITO IMPORTA A ORDEM...
+            HomeScreen(email!!, navController)
+            //NÃO IMPORTA A ORDEM: navController = navController,  email= email
+        }
+        // TRECHO DE CÓDIGO OMITIDO
 
-            // DESSE JEITO NÃO IMPORTA A ORDEM...
-            HomeScreen(
-                navController, email
+        composable(
+            route = Destination.CategoryRecipeScreen.route,
+            arguments = listOf(
+                navArgument(name = "id") {
+                    type = NavType.IntType
+                }
             )
-            // DESSE JEITO, VAIR PRECISAR SER IGUAL A ROTA DA FUNÇÃO HomeScreen!!!
-            // HomeScreen(navController, email, password, name)
-
-            //pode ser:
-            // navController = navController,
-            // email= email
+        ) { backStackEntry ->
+            var categoryId = backStackEntry.arguments?.getInt("id")
+            CategoryRecipeScreen(categoryId,navController)
         }
 
-    }
+// TRECHO DE CÓDIGO OMITIDO
 
+    }
 }

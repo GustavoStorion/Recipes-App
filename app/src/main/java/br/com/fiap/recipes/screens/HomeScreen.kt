@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -56,12 +55,13 @@ import androidx.navigation.compose.rememberNavController
 import br.com.fiap.recipes.R
 import br.com.fiap.recipes.components.CategoryItem
 import br.com.fiap.recipes.components.RecipeItem
+import br.com.fiap.recipes.navigation.Destination
 import br.com.fiap.recipes.repository.getAlCategories
 import br.com.fiap.recipes.repository.getAllRecipes
 import br.com.fiap.recipes.ui.theme.RecipesTheme
 
 @Composable
-fun HomeScreen(navController: NavController, email: String?) {
+fun HomeScreen(email: String?, navController: NavController) {
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -73,7 +73,10 @@ fun HomeScreen(navController: NavController, email: String?) {
             // Espaçamento seguro, o SCAFFOLD sabe onde é a sua área de conteúdo. Então ele vai garantir com que aquilo que você jogar dentro do content, fique dentro do content
             // Necessário passar padddigValues como valor para o parâmetro padding.
         )  { paddingValues ->
-            ContentScreen(modifier = Modifier.padding(paddingValues)) // Content area
+            ContentScreen(
+                modifier = Modifier.padding(paddingValues),
+                navController = navController
+                ) // Content area
         }
     }
 }
@@ -82,7 +85,7 @@ fun HomeScreen(navController: NavController, email: String?) {
 @Composable
 private fun HomeScreenPreview() {
     RecipesTheme {
-        HomeScreen(rememberNavController(), "",) // ou null
+        //HomeScreen(" ",rememberNavController()) // ou null
     }
 }
 // Função experimental, sabendo que ela pode mudar...
@@ -217,7 +220,8 @@ private fun FloatingActionButtonPreview(){
 }
 
 @Composable
-fun ContentScreen(modifier: Modifier = Modifier) {
+fun ContentScreen(modifier: Modifier = Modifier,
+                  navController: NavController) {
     val categories = getAlCategories()
     val recipes = getAllRecipes()
 
@@ -289,7 +293,13 @@ fun ContentScreen(modifier: Modifier = Modifier) {
         ) {
             // chamar items list<T>
             items(categories) {category ->
-                CategoryItem(category)
+                CategoryItem(category = category, onClick = {
+                    navController.navigate(
+                        route = Destination
+                            .CategoryRecipeScreen
+                            .createRoute(id = category.id)
+                    )
+                })
             }
         }
         //Spacer(modifier = Modifier.height(116.dp))
@@ -319,7 +329,7 @@ fun ContentScreen(modifier: Modifier = Modifier) {
 @Composable
 private fun ContentScreenPreview() {
     RecipesTheme {
-        ContentScreen()
+        ContentScreen(navController = rememberNavController())
     }
 }
 

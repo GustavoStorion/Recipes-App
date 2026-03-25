@@ -33,7 +33,6 @@ import br.com.fiap.recipes.ui.theme.RecipesTheme
 
 @Composable
 fun RecipeItem(recipe: Recipe) {
-
     Card(
         modifier = Modifier
             .fillMaxWidth()

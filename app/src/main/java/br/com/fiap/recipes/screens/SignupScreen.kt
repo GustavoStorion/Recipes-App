@@ -1,6 +1,7 @@
 package br.com.fiap.recipes.screens
 
 import android.content.res.Configuration
+import android.util.Patterns
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -14,17 +15,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Mail
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.filled.RemoveRedEye
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,14 +36,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import br.com.fiap.recipes.R
+import br.com.fiap.recipes.model.User
 import br.com.fiap.recipes.navigation.Destination
+import br.com.fiap.recipes.repository.SharedPreferencesUserRepository
 import br.com.fiap.recipes.ui.theme.RecipesTheme
 
 @Composable
@@ -149,9 +157,32 @@ private fun UserImagePreivew() {
 
 @Composable
 fun SignupUserForm(navController: NavController) {
+
+    // Variáveis de estado para para controlar
+    // os valores exibidos no OutlineTextFields
+    var name by remember{mutableStateOf("")}
     var email by remember{mutableStateOf("")}
     var password by remember{mutableStateOf("")}
-    var name by remember{mutableStateOf("")}
+
+    //Variáveis de estado para verificar se os dados estão corretos
+    var isNameError by remember { mutableStateOf(false) }
+    var isEmailError by remember { mutableStateOf(false) }
+    var isPasswordError by remember { mutableStateOf(false) }
+
+    // Variável de estado para controlar a exibição da mensagem de erro
+    var showDialogError by remember { mutableStateOf(false) }
+    var showDialogSuccess by remember { mutableStateOf(false) }
+
+    //Função para verificar se os dados estão corretos
+    fun validade(): Boolean{
+        isNameError = name.length < 3
+        isEmailError = email.length < 3 || !Patterns.EMAIL_ADDRESS.matcher(email).matches()
+        isPasswordError = password.length < 3
+        return !isNameError && !isEmailError && !isPasswordError
+    }
+
+    // Criar uma instância do SharedPreferencesUserRepository
+    val userRepository = SharedPreferencesUserRepository(LocalContext.current)
 
     Column(
         modifier = Modifier
@@ -185,8 +216,28 @@ fun SignupUserForm(navController: NavController) {
                     contentDescription = stringResource(R.string.person_icon),
                     tint = MaterialTheme.colorScheme.tertiary
                 )
-
+            },
+            isError = isNameError,
+            trailingIcon = {
+                if(isNameError){
+                    Icon(
+                        imageVector = Icons.Default.Error,
+                        contentDescription = "Error icon",
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                }
+            },
+            supportingText = {
+                if(isNameError){
+                    Text(
+                        text = "Name must have at least 3 characters",
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.End
+                    )
+                }
             }
+
         )
 
         //Caixa de texto para email do usuário
@@ -216,6 +267,26 @@ fun SignupUserForm(navController: NavController) {
                     contentDescription = stringResource(R.string.mail_icon),
                     tint = MaterialTheme.colorScheme.tertiary
                 )
+            },
+            isError = isEmailError,
+            trailingIcon = {
+                if(isEmailError){
+                    Icon(
+                        imageVector = Icons.Default.Error,
+                        contentDescription = "Error icon",
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                }
+            },
+            supportingText = {
+                if(isEmailError){
+                    Text(
+                        text = "E-mail must have at least 3 characters",
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.End
+                    )
+                }
             }
 
         )
@@ -247,12 +318,25 @@ fun SignupUserForm(navController: NavController) {
                     tint = MaterialTheme.colorScheme.tertiary
                 )
             },
+            isError = isPasswordError,
             trailingIcon = {
-                Icon(
-                    imageVector = Icons.Default.RemoveRedEye,
-                    contentDescription = stringResource(R.string.removeredeye_icon),
-                    tint = MaterialTheme.colorScheme.tertiary
-                )
+                if(isPasswordError){
+                    Icon(
+                        imageVector = Icons.Default.Error,
+                        contentDescription = "Error icon",
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                }
+            },
+            supportingText = {
+                if(isPasswordError){
+                    Text(
+                        text = "Password must have at least 3 characters",
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.End
+                    )
+                }
             }
         )
         Spacer(modifier = Modifier.height(32.dp))
@@ -260,9 +344,18 @@ fun SignupUserForm(navController: NavController) {
         // Botão Create Account
         Button(
             onClick = {
-                navController.navigate(
-                    Destination.HomeScreen.createRoute(email)
-                )
+                if(validade()){
+                    userRepository.saveUser(
+                        User(
+                            name = name,
+                            email = email,
+                            password = password
+                        )
+                    )
+                    showDialogSuccess = true
+                }else{
+                    showDialogError = true
+                }
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -274,6 +367,51 @@ fun SignupUserForm(navController: NavController) {
                 style = MaterialTheme.typography.labelMedium
             )
         }
+    }
+    // Caixa de diálogo de sucesso
+    if (showDialogSuccess){
+        AlertDialog(
+            onDismissRequest = {showDialogError = false},
+            title = {
+                Text(text = "Success")
+            },
+            text = {
+                Text(text = "Account created successfully")
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showDialogSuccess = false
+                        navController.navigate(Destination.LoginScreen.route)
+                    }
+                ) {
+                    Text(text = "OK")
+                }
+            }
+        )
+    }
+
+    // Caixa de diálogo de erro
+    if(showDialogError){
+        AlertDialog(
+            //onDismisRequest: se clicar fora da caixa, o dialogError se torna falso(ele some)
+            onDismissRequest = {showDialogError = false},
+            title = {
+                Text(text = "Error")
+            },
+            text = {
+                Text(text = "Please fill all fields correctly")
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showDialogError = false
+                    }
+                ) {
+                    Text(text = "OK")
+                }
+            }
+        )
     }
 }
 

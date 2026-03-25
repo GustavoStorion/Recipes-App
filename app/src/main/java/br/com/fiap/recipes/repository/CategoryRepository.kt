@@ -19,3 +19,9 @@ fun getAlCategories() = listOf<Category>(
     Category(id = 7000, name = "Drinks",
         image = R.drawable.drink, background = Color(0xFF80DEEA))
 )
+
+fun getCategoryById(id: Int) = getAlCategories()
+    // utilizamos o find para retornar apenas UMA categoria - o FILTER vai varrer todos os itens, indo até o final da lista
+    .find { category ->
+        category.id == id
+    }
